@@ -65,6 +65,7 @@ impl GeometricObject for Sphere{
 
                         if t1>K_EPSILON{
                                 let normal=ray.get_point_at(t1)-self.c;
+                                //dbg!(normal);
                                 return Some(HitInfo::new(t1, Normal3D::from(normal)));
                         }
                         let t2=(-b+discriminant.sqrt())/2.0*a; //larger

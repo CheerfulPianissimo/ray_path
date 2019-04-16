@@ -43,9 +43,9 @@ impl Add<Vector3D> for Point3D{
 
 #[derive(Debug,Copy,Clone)]
 pub struct Normal3D{
-    pub x:f64,
-    pub y:f64,
-    pub z:f64,
+    x:f64,
+    y:f64,
+    z:f64,
 }
 
 impl Normal3D {
@@ -60,6 +60,18 @@ impl Normal3D {
             y:self.y*inverse,
             z:self.z*inverse
         }
+    }
+
+    pub fn x(&self)->f64{
+        self.x
+    }
+
+    pub fn y(&self)->f64{
+        self.y
+    }
+
+    pub fn z(&self)->f64{
+        self.z
     }
 }
 
@@ -102,6 +114,15 @@ impl Vector3D{
 
     pub fn null()->Vector3D{
         Self::new(0.0,0.0,0.0)
+    }
+
+    pub fn normalize(&self)->Vector3D{
+        let inverse=1.0/((self.x*self.x+self.y*self.y+self.z*self.z).sqrt());
+        Vector3D{
+            x:self.x*inverse,
+            y:self.y*inverse,
+            z:self.z*inverse
+        }
     }
 }
 

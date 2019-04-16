@@ -11,7 +11,7 @@ impl SimpleTracer {
     }
 
     pub fn render(&self, world: &World) -> DynamicImage {
-        let z_plane = 100.0;
+        let z_plane = -10.0;
         let mut img =
             DynamicImage::new_rgb8(world.get_view_plane().get_hres(), world.get_view_plane().get_vres());
 
@@ -23,7 +23,10 @@ impl SimpleTracer {
                 let in_world_x = x as f64 * pixel_size - pixel_size / 2.0;
                 let in_world_y = y as f64 * pixel_size - pixel_size / 2.0;
 
-                let ray = Ray::new(Point3D::new(in_world_x, in_world_y, z_plane), Vector3D::new(0.0, 0.0, -1.0));
+                let ray_direction=Point3D::new(in_world_x, in_world_y, z_plane)-
+                                                    Point3D::new(0.0,0.0,0.0);
+                let ray = Ray::new(Point3D::new(in_world_x, in_world_y, z_plane),
+                                   ray_direction.normalize());
 
                 let img_x = (x + (hres/ 2) as i32) as u32;
                 let img_y = ((vres/ 2) as i32-y-1) as u32;
@@ -46,8 +49,7 @@ impl SimpleTracer {
                         min=hitinfo.get_tmin();
                         //color=object.get_material().get_color();
                         let normal=hitinfo.get_normal().normalize();
-                        //dbg!(normal);
-                        color=RGBColor::new(normal.x.abs(),normal.y.abs(),normal.z.abs());
+                        color=RGBColor::new((normal.x()+1.0)/2.0,(normal.y()+1.0)/2.0,(normal.z()+1.0)/2.0);
                     }
                 },
                 None=>{}
