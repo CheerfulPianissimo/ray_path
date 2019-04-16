@@ -29,16 +29,37 @@ impl Sub for Point3D{
     }
 }
 
+impl Add<Vector3D> for Point3D{
+    type Output=Point3D;
+
+    fn add(self, other: Vector3D)->Point3D{
+        Point3D{
+            x:self.x+other.x,
+            y:self.y+other.y,
+            z:self.z+other.z
+        }
+    }
+}
+
 #[derive(Debug,Copy,Clone)]
 pub struct Normal3D{
-    x:f64,
-    y:f64,
-    z:f64,
+    pub x:f64,
+    pub y:f64,
+    pub z:f64,
 }
 
 impl Normal3D {
     pub fn new(x: f64, y: f64, z: f64) -> Self {
         Normal3D { x, y, z }
+    }
+
+    pub fn normalize(&self)->Normal3D{
+        let inverse=1.0/((self.x*self.x+self.y*self.y+self.z*self.z).sqrt());
+        Normal3D{
+            x:self.x*inverse,
+            y:self.y*inverse,
+            z:self.z*inverse
+        }
     }
 }
 
@@ -58,6 +79,13 @@ impl Mul<Vector3D> for Normal3D{
     }
 }
 
+impl From<Vector3D> for Normal3D{
+    fn from(vec3:Vector3D)->Self{
+        Normal3D{
+            x:vec3.x,y:vec3.y,z:vec3.z
+        }
+    }
+}
 
 #[derive(Debug,Copy,Clone)]
 pub struct Vector3D{
@@ -135,6 +163,15 @@ impl BitXor for Vector3D{
         }
     }
 }
+//Scaling
+impl Mul<f64> for Vector3D{
+    type Output=Self;
+
+    fn mul(self, other: f64) -> Self {
+        Vector3D{x:self.x*other,
+            y:self.y*other,z:self.z*other}
+    }
+}
 
 impl Mul<Normal3D> for Vector3D{
     type Output = f64;
@@ -144,6 +181,7 @@ impl Mul<Normal3D> for Vector3D{
     }
 }
 
+#[derive(Debug,Copy,Clone)]
 pub struct RGBColor{
     r:f64,
     g:f64,

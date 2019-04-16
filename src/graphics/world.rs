@@ -1,5 +1,5 @@
 use super::{RGBColor};
-use crate::graphics::{Ray, HasMaterial};
+use crate::graphics::{Ray, GeometricObject};
 use crate::graphics::{Point3D};
 use crate::shapes::Sphere;
 
@@ -32,11 +32,20 @@ impl ViewPlane {
 pub struct World{
     v_plane:ViewPlane,
     bg_color:RGBColor,
+    objects:Vec<Box<dyn GeometricObject>>
 }
 
 impl World {
     pub fn new(v_plane: ViewPlane, bg_color: RGBColor) -> Self {
-        World {v_plane , bg_color }
+        World {v_plane , bg_color ,objects:Vec::new()}
+    }
+
+    pub fn get_objects_mut(&mut self)->&mut Vec<Box<dyn GeometricObject>>{
+        &mut self.objects
+    }
+
+    pub fn get_objects(&self)->&Vec<Box<dyn GeometricObject>>{
+        &self.objects
     }
 
     pub fn get_view_plane(&self)->&ViewPlane{

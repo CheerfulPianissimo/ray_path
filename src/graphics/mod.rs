@@ -17,16 +17,35 @@ impl Ray{
     pub fn new(o:Point3D,d:Vector3D)->Ray{
         Ray{o,d}
     }
+
+    pub fn get_point_at(&self,t:f64)->Point3D{
+        self.o+self.d*t
+    }
 }
 
-pub trait Hittable{
+pub trait GeometricObject{
     fn check_hit(&self,ray:&Ray)->Option<HitInfo>;
+
+    fn get_material(&self)->&Material;
 }
 
 #[derive(Debug)]
 pub struct HitInfo{
     ///Lowest value of ray parameter t which intersects Hittable object
-    pub tmin:f64,
+    tmin:f64,
+    normal:Normal3D
+}
+
+impl HitInfo {
+    pub fn new(tmin: f64, normal: Normal3D) -> Self {
+        HitInfo { tmin, normal }
+    }
+
+    pub fn get_tmin(&self)->f64{self.tmin}
+
+    pub fn get_normal(&self)->&Normal3D{
+        &self.normal
+    }
 }
 
 
@@ -44,6 +63,3 @@ impl Material {
     }
 }
 
-pub trait HasMaterial{
-    fn get_material(&self)->&Material;
-}

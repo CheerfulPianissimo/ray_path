@@ -7,24 +7,18 @@ use self::shapes::*;
 use self::tracer::*;
 
 fn main() {
-    let (w,h)=(100,100);
-    let sphere=Sphere::new(Point3D::new(50.0,50.0,50.0),10.0,Material::new(RGBColor::new(1.0,1.0,1.0)));
-    let plane=Plane::new(Point3D::origin(),Normal3D::new(0.0,1.0,-0.1),Material::new(RGBColor::new(1.0,1.0,1.0)));
-    for y in 0..w{
-        for x in 0..h{
-            let ray=Ray::new(Point3D::new(x as f64,y as f64,100.0),Vector3D::new(0.0,0.0,-1.0));
-            if sphere.check_hit(&ray).is_some()||plane.check_hit(&ray).is_some(){
-                print!("{}",1);
-            }else {
-                print!(" ");
-            }
-        }
-        println!();
-    }
+    let sphere = Sphere::new(Point3D::new(0.0, 100.0, 0.0), 100.0,
+                             Material::new(RGBColor::new(1.0, 0.0, 0.0)));
+    let sphere2 = Sphere::new(Point3D::new(000.0, -1000.0, 0.0), 990.0,
+                             Material::new(RGBColor::new(0.0, 1.0, 0.0)));
+    let plane=Plane::new(Point3D::origin(),Normal3D::new(0.0,0.0,1.0),
+                         Material::new(RGBColor::new(0.0,1.0,1.0)));
 
-    let world=World::new(ViewPlane::new(1200,1000,1.0),RGBColor::new(0.0,0.0,0.0));
-
+    let mut world=World::new(ViewPlane::new(1200,1000,1.0),RGBColor::new(0.0,0.0,0.0));
+    world.get_objects_mut().push(Box::new(sphere));
+   // world.get_objects_mut().push(Box::new(plane));
+    world.get_objects_mut().push(Box::new(sphere2));
     let tracer=SimpleTracer::new();
 
-    tracer.render(&world).save("./img").unwrap();
+    tracer.render(&world).save("./img.jpeg").unwrap();
 }
