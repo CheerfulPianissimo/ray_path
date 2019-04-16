@@ -19,4 +19,8 @@ fn main() {
         }
         println!();
     }
+
+    let world=World::new(ViewPlane::new(1200,1000,1.0),RGBColor::new(0.0,0.0,0.0));
+
+    world.render();
 }

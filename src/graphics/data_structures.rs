@@ -119,7 +119,7 @@ impl Mul for Vector3D{
     type Output = f64;
 
     fn mul(self, other: Self) -> f64 {
-            self.x*other.x+self.y*other.y+self.z*other.z
+        self.x*other.x+self.y*other.y+self.z*other.z
     }
 }
 
@@ -144,30 +144,6 @@ impl Mul<Normal3D> for Vector3D{
     }
 }
 
-///Infinite Ray represented by p=o+td
-pub struct Ray{
-    ///Origin of ray
-    pub o:Point3D,
-    ///Direction in which it points
-    pub d:Vector3D,
-}
-
-impl Ray{
-    pub fn new(o:Point3D,d:Vector3D)->Ray{
-        Ray{o,d}
-    }
-}
-
-pub trait Hittable{
-    fn check_hit(&self,ray:&Ray)->Option<HitInfo>;
-}
-
-#[derive(Debug)]
-pub struct HitInfo{
-    ///Lowest value of ray parameter t which intersects Hittable object
-    pub tmin:f64,
-}
-
 pub struct RGBColor{
     r:f64,
     g:f64,
@@ -178,18 +154,16 @@ impl RGBColor {
     pub fn new(r: f64, g: f64, b: f64) -> Self {
         RGBColor { r, g, b }
     }
-}
 
-pub struct Material{
-    color:RGBColor
-}
-
-impl Material {
-    pub fn new(color: RGBColor) -> Self {
-        Material { color }
+    pub fn r_in_8_bit(&self)->u8{
+        (self.r*255.0) as u8
     }
-}
 
-pub trait HasMaterial{
-    fn get_material(&self)->&Material;
+    pub fn g_in_8_bit(&self)->u8{
+        (self.g*255.0) as u8
+    }
+
+    pub fn b_in_8_bit(&self)->u8{
+        (self.b*255.0) as u8
+    }
 }

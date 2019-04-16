@@ -51,6 +51,11 @@ impl Sphere {
         }
 }
 
+impl HasMaterial for Sphere{
+        fn get_material(&self) -> &Material {
+                &self.material
+        }
+}
 
 impl Hittable for Sphere{
         fn check_hit(&self,ray:&Ray)->Option<HitInfo>{
