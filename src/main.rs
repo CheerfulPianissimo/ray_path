@@ -1,8 +1,10 @@
 mod graphics;
 mod shapes;
+mod tracer;
 
 use self::graphics::*;
 use self::shapes::*;
+use self::tracer::*;
 
 fn main() {
     let (w,h)=(100,100);
@@ -22,5 +24,7 @@ fn main() {
 
     let world=World::new(ViewPlane::new(1200,1000,1.0),RGBColor::new(0.0,0.0,0.0));
 
-    world.render();
+    let tracer=SimpleTracer::new();
+
+    tracer.render(&world).save("./img").unwrap();
 }
