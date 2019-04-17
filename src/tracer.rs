@@ -1,7 +1,7 @@
 use super::{RGBColor,Material};
-use image::{GenericImage, DynamicImage, Pixel};
+use image::{GenericImage, DynamicImage, Pixel, RgbaImage};
 use crate::graphics::{Point3D, Vector3D,Ray,GeometricObject,World,ViewPlane};
-
+use rand::{Rng};
 
 pub struct SimpleTracer;
 
@@ -18,22 +18,35 @@ impl SimpleTracer {
         let vres=world.get_view_plane().get_vres();
         let hres=world.get_view_plane().get_hres();
         let pixel_size=world.get_view_plane().get_pixel_size();
+        let mut rng = rand::thread_rng();
+
         for y in -((vres/ 2) as i32)..(vres/ 2) as i32 {
             for x in -((hres/ 2) as i32)..(hres/ 2) as i32 {
-                let in_world_x = x as f64 * pixel_size - pixel_size / 2.0;
-                let in_world_y = y as f64 * pixel_size - pixel_size / 2.0;
+                let mut avg_color=RGBColor::new(0.0,0.0,0.0);
+                let samples=5.0;
+                for i in 0..samples as u32{
+                    let in_world_x = x as f64 * pixel_size - rng.gen_range(0.0,pixel_size);
+                    let in_world_y = y as f64 * pixel_size - rng.gen_range(0.0,pixel_size);
 
-                let ray_direction=Point3D::new(in_world_x, in_world_y, z_plane)-
-                                                    Point3D::new(0.0,0.0,0.0);
-                let ray = Ray::new(Point3D::new(in_world_x, in_world_y, z_plane),
-                                   ray_direction.normalize());
+                    let ray_direction = Point3D::new(in_world_x, in_world_y, z_plane) -
+                        Point3D::new(0.0, 0.0, 0.0);
+                    let ray = Ray::new(Point3D::new(in_world_x, in_world_y, z_plane),
+                                       ray_direction.normalize());
 
-                let img_x = (x + (hres/ 2) as i32) as u32;
-                let img_y = ((vres/ 2) as i32-y-1) as u32;
 
-                let pixel_color=self.trace_ray(&ray,&world);
+
+                    let pixel_color = self.trace_ray(&ray, &world);
+                    avg_color.r+=pixel_color.r;
+                    avg_color.g+=pixel_color.g;
+                    avg_color.b+=pixel_color.b;
+                }
+                avg_color.r/=samples;avg_color.g/=samples;avg_color.b/=samples;
+
+                let img_x = (x + (hres / 2) as i32) as u32;
+                let img_y = ((vres / 2) as i32 - y - 1) as u32;
+
                 img.put_pixel(img_x, img_y, image::Rgba::from_channels(
-                    pixel_color.r_in_8_bit(),pixel_color.g_in_8_bit(),pixel_color.b_in_8_bit(), 255));
+                    avg_color.r_in_8_bit(),avg_color.g_in_8_bit(),avg_color.b_in_8_bit(), 255));
             }
         }
         img
