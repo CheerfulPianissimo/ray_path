@@ -25,7 +25,7 @@ impl SimpleTracer {
             println!("Completed: {}%",((y+vres as i32/2)*100)/vres as i32);
             for x in -((hres/ 2) as i32)..(hres/ 2) as i32 {
                 let mut avg_color=RGBColor::new(0.0,0.0,0.0);
-                let samples:f64=100.0;
+                let samples:f64=49.0;
                 let samples_sqrt=samples.sqrt() as u32;
                 let sub_pixel_size=pixel_size/samples_sqrt as f64;
                 for p in 0..samples_sqrt{
@@ -76,22 +76,15 @@ impl SimpleTracer {
         match min_hitinfo {
             Some(hit_info)=> {
                 if depth==0 {
-                    /*let normal = hit_info.get_normal().normalize();
+                    let normal = hit_info.get_normal().normalize();
                     RGBColor::new((normal.x() + 1.0) / 2.0,
                                   (normal.y() + 1.0) / 2.0,
-                                  (normal.z() + 1.0) / 2.0)*/
-                    return material.unwrap().get_color().clone()
+                                  (normal.z() + 1.0) / 2.0)
+                    //return material.unwrap().get_color().clone()
                 }else {
-                    let hit_point=ray.get_point_at(min);
-                    let mut rng = rand::thread_rng();
-                    let random_unit_vec=Vector3D::new(rng.gen_range(-1.0,1.0),
-                                                      rng.gen_range(-1.0,1.0),
-                                                      rng.gen_range(-1.0,1.0) ).normalize();
-                    let ray_out=
-                        (Vector3D::from(hit_info.get_normal().normalize())+
-                        random_unit_vec).normalize();
-                    return self.trace_ray(&Ray::new(hit_point,ray_out),
-                                          &world,depth-1)*0.5;
+                    let (ray_out,attenuation)=material.unwrap().process(ray,&hit_info);
+                    return self.trace_ray(&ray_out,
+                                          &world,depth-1)*attenuation;
                 }
             },
             None=>{
