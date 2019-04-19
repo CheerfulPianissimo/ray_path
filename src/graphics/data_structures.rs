@@ -15,6 +15,18 @@ impl Point3D{
     pub fn origin()->Point3D{
         Self::new(0.0,0.0,0.0)
     }
+
+    pub fn x(&self)->f64{
+        self.x
+    }
+
+    pub fn y(&self)->f64{
+        self.y
+    }
+
+    pub fn z(&self)->f64{
+        self.z
+    }
 }
 
 impl Sub for Point3D{
@@ -60,6 +72,10 @@ impl Normal3D {
             y:self.y*inverse,
             z:self.z*inverse
         }
+    }
+
+    pub fn magnitude_sqr(&self)->f64{
+        (self.x*self.x+self.y*self.y+self.z*self.z)
     }
 
     pub fn x(&self)->f64{
@@ -123,6 +139,22 @@ impl Vector3D{
             y:self.y*inverse,
             z:self.z*inverse
         }
+    }
+
+    pub fn magnitude_sqr(&self)->f64{
+        (self.x*self.x+self.y*self.y+self.z*self.z)
+    }
+
+    pub fn x(&self)->f64{
+        self.x
+    }
+
+    pub fn y(&self)->f64{
+        self.y
+    }
+
+    pub fn z(&self)->f64{
+        self.z
     }
 }
 
@@ -202,6 +234,14 @@ impl Mul<Normal3D> for Vector3D{
     }
 }
 
+impl From<Normal3D> for Vector3D{
+    fn from(vec3:Normal3D)->Self{
+        Vector3D{
+            x:vec3.x,y:vec3.y,z:vec3.z
+        }
+    }
+}
+
 #[derive(Debug,Copy,Clone)]
 pub struct RGBColor{
     pub r:f64,
@@ -224,5 +264,22 @@ impl RGBColor {
 
     pub fn b_in_8_bit(&self)->u8{
         (self.b*255.0) as u8
+    }
+}
+
+impl Mul<f64> for RGBColor{
+    type Output=Self;
+
+    fn mul(self, other: f64) -> Self {
+        RGBColor{r:self.r*other,
+            g:self.g*other,b:self.b*other}
+    }
+}
+
+impl From<Vector3D> for RGBColor{
+    fn from(vec3:Vector3D)->Self{
+        RGBColor{
+            r:vec3.x,g:vec3.y,b:vec3.z
+        }
     }
 }

@@ -4,10 +4,7 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="MacroExpansionManager">
-    <option name="directoryName" value="UwzhiBzw" />
-  </component>
-  <component name="ProjectRootManager">
-    <output url="file://$PROJECT_DIR$/out" />
+    <option name="directoryName" value="RJDjhPWB" />
   </component>
   <component name="RustProjectSettings">
     <option name="toolchainHomeDirectory" value="$USER_HOME$/.cargo/bin" />

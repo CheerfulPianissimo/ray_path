@@ -1,6 +1,6 @@
 use crate::graphics::*;
 
-const K_EPSILON:f64=0.000001;
+const K_EPSILON:f64=0.00001;
 
 pub struct Plane{
         ///A point on the plane
