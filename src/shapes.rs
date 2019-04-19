@@ -5,14 +5,14 @@ const K_EPSILON:f64=0.00001;
 pub struct Plane<'a>{
         ///A point on the plane
         a:Point3D,
-        ///A Normal to the plane
+        ///A normalised Normal to the plane
         n:Normal3D,
         material:&'a Material,
 }
 
 impl<'a> Plane<'a>{
         pub fn new(a: Point3D, n: Normal3D,material:&'a Material) -> Self {
-                Plane { a, n ,material}
+                Plane { a, n:n.normalize() ,material}
         }
 }
 
@@ -68,7 +68,8 @@ impl<'a> GeometricObject for Sphere<'a> {
                                 let normal = hitpoint - self.c;
                                 //dbg!(normal);
                                 return Some(HitInfo::new(t1,
-                                                         Normal3D::from(normal), hitpoint));
+                                                         Normal3D::from(normal).normalize()
+                                                         , hitpoint));
                         }
                         let t2 = (-b + discriminant.sqrt()) / 2.0 * a; //larger
 
@@ -76,7 +77,7 @@ impl<'a> GeometricObject for Sphere<'a> {
                                 let hitpoint = ray.get_point_at(t2);
                                 let normal = hitpoint - self.c;
                                 return Some(HitInfo::new(t2,
-                                                         Normal3D::from(normal),
+                                                         Normal3D::from(normal).normalize(),
                                                          hitpoint));
                         } else {
                                 //Both t1 and t2 are negative or 0
@@ -90,3 +91,38 @@ impl<'a> GeometricObject for Sphere<'a> {
         }
 }
 
+pub struct ThinDisc<'a>{
+        ///Center of the disc
+        c:Point3D,
+        ///A normalised Normal to the disc
+        n:Normal3D,
+        ///Radius of disk
+        r:f64,
+        material:&'a Material,
+}
+
+impl<'a> ThinDisc<'a>{
+        pub fn new(c: Point3D,r:f64,n: Normal3D,material:&'a Material) -> Self {
+                ThinDisc { c, n:n.normalize(),r,material}
+        }
+}
+
+impl<'a> GeometricObject for ThinDisc<'a> {
+        fn check_hit(&self, ray: &Ray) -> Option<HitInfo> {
+                let plane=Plane::new(self.c,self.n,self.material);
+                match plane.check_hit(ray){
+                        Some(hitinfo)=>{
+                                let hitpoint=*hitinfo.get_hitpoint();
+                                let distance_from_center_sqr=(hitpoint-self.c)*(hitpoint-self.c);
+                                if distance_from_center_sqr<=self.r*self.r{
+                                        Some(hitinfo)
+                                }else {None}
+                        },
+                        None=>None
+                }
+        }
+
+        fn get_material(&self) -> &Material {
+                self.material
+        }
+}

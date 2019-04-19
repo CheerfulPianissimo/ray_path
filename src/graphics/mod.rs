@@ -34,6 +34,7 @@ pub trait GeometricObject{
 pub struct HitInfo{
     ///Lowest value of ray parameter t which intersects Hittable object
     tmin:f64,
+    ///The normalised normal
     normal:Normal3D,
     hitpoint:Point3D
 }
@@ -84,4 +85,28 @@ impl Material for LambertianMaterial{
         (Ray::new(hit_point.clone(),ray_out),self.albedo)
     }
 }
+
+
+
+pub struct MetallicMaterial{
+    albedo:f64,
+}
+
+impl MetallicMaterial {
+    pub fn new(albedo:f64) -> Self {
+        MetallicMaterial { albedo }
+    }
+
+}
+
+impl Material for MetallicMaterial{
+    fn process(&self,ray_in:&Ray,hit_info:&HitInfo)->(Ray,f64){
+        let hit_point=hit_info.get_hitpoint();
+        //Reflect
+        let new_dir=ray_in.d-Vector3D::from(hit_info.normal)*(ray_in.d*hit_info.normal)*2.0;
+
+        (Ray::new(hit_point.clone(),new_dir),self.albedo)
+    }
+}
+
 

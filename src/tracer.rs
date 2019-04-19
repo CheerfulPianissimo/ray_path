@@ -13,6 +13,9 @@ impl SimpleTracer {
 
     pub fn render(&self, world: &World) -> DynamicImage {
         let z_plane = 5.0;
+        let samples:f64=81.0;
+        let samples_sqrt=samples.sqrt() as u32;
+
         let mut img =
             DynamicImage::new_rgb8(world.get_view_plane().get_hres(), world.get_view_plane().get_vres());
 
@@ -25,8 +28,6 @@ impl SimpleTracer {
             println!("Completed: {}%",((y+vres as i32/2)*100)/vres as i32);
             for x in -((hres/ 2) as i32)..(hres/ 2) as i32 {
                 let mut avg_color=RGBColor::new(0.0,0.0,0.0);
-                let samples:f64=49.0;
-                let samples_sqrt=samples.sqrt() as u32;
                 let sub_pixel_size=pixel_size/samples_sqrt as f64;
                 for p in 0..samples_sqrt{
                     for q in 0..samples_sqrt {
@@ -40,7 +41,7 @@ impl SimpleTracer {
                         let ray = Ray::new(Point3D::new(in_world_x, in_world_y, z_plane),
                                            //Vector3D::new(0.0,0.0,-1.0));
                                            ray_direction.normalize());
-                        let pixel_color = self.trace_ray(&ray, &world,500000);
+                        let pixel_color = self.trace_ray(&ray, &world,20);
                         avg_color.r += pixel_color.r;
                         avg_color.g += pixel_color.g;
                         avg_color.b += pixel_color.b;
@@ -76,7 +77,7 @@ impl SimpleTracer {
         match min_hitinfo {
             Some(hit_info)=> {
                 if depth==0 {
-                    let normal = hit_info.get_normal().normalize();
+                    let normal = hit_info.get_normal();
                     RGBColor::new((normal.x() + 1.0) / 2.0,
                                   (normal.y() + 1.0) / 2.0,
                                   (normal.z() + 1.0) / 2.0)
