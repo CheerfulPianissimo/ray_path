@@ -1,13 +1,13 @@
-use super::{RGBColor};
+use super::RGBColor;
 use crate::graphics::{Ray, GeometricObject};
-use crate::graphics::{Point3D};
+use crate::graphics::Point3D;
 use crate::shapes::Sphere;
 
-pub struct ViewPlane{
-    hres:u32,
-    vres:u32,
+pub struct ViewPlane {
+    hres: u32,
+    vres: u32,
     ///Pixel size: Number of  in-world units corresponding to a pixel
-    s:f64,
+    s: f64,
 }
 
 impl ViewPlane {
@@ -15,44 +15,44 @@ impl ViewPlane {
         ViewPlane { hres, vres, s }
     }
 
-    pub fn get_vres(&self)->u32{
+    pub fn get_vres(&self) -> u32 {
         self.vres
     }
 
-    pub fn get_hres(&self)->u32{
+    pub fn get_hres(&self) -> u32 {
         self.hres
     }
 
     ///Pixel size: Number of  in-world units corresponding to a pixel
-    pub fn get_pixel_size(&self)->f64{
+    pub fn get_pixel_size(&self) -> f64 {
         self.s
     }
 }
 
-pub struct World<'a>{
-    v_plane:ViewPlane,
-    bg_color:RGBColor,
-    objects:Vec<Box<dyn GeometricObject+'a>>
+pub struct World<'a> {
+    v_plane: ViewPlane,
+    bg_color: RGBColor,
+    objects: Vec<Box<dyn GeometricObject + 'a>>,
 }
 
 impl<'a> World<'a> {
     pub fn new(v_plane: ViewPlane, bg_color: RGBColor) -> Self {
-        World {v_plane , bg_color ,objects:Vec::new()}
+        World { v_plane, bg_color, objects: Vec::new() }
     }
 
-    pub fn get_objects_mut(&mut self)->&mut Vec<Box<dyn GeometricObject+'a>>{
+    pub fn get_objects_mut(&mut self) -> &mut Vec<Box<dyn GeometricObject + 'a>> {
         &mut self.objects
     }
 
-    pub fn get_objects(&self)->&Vec<Box<dyn GeometricObject+'a>>{
+    pub fn get_objects(&self) -> &Vec<Box<dyn GeometricObject + 'a>> {
         &self.objects
     }
 
-    pub fn get_view_plane(&self)->&ViewPlane{
+    pub fn get_view_plane(&self) -> &ViewPlane {
         &self.v_plane
     }
 
-    pub fn get_bg_color(&self)->&RGBColor{
+    pub fn get_bg_color(&self) -> &RGBColor {
         &self.bg_color
     }
 }
