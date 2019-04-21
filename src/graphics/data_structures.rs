@@ -1,4 +1,4 @@
-use std::ops::{Add, Neg, Sub, Mul, BitXor};
+use std::ops::{Add, BitXor, Mul, Neg, Sub};
 
 #[derive(Debug, Copy, Clone)]
 pub struct Point3D {
@@ -124,7 +124,6 @@ pub struct Vector3D {
     z: f64,
 }
 
-
 impl Vector3D {
     pub fn new(x: f64, y: f64, z: f64) -> Vector3D {
         Vector3D { x, y, z }
@@ -172,7 +171,6 @@ impl Add for Vector3D {
     }
 }
 
-
 impl Sub for Vector3D {
     type Output = Self;
 
@@ -184,7 +182,6 @@ impl Sub for Vector3D {
         }
     }
 }
-
 
 impl Neg for Vector3D {
     type Output = Self;
@@ -302,6 +299,10 @@ impl Mul for RGBColor {
     type Output = RGBColor;
 
     fn mul(self, other: Self) -> Self {
-        RGBColor { r: self.r * other.r, g: self.g * other.g, b: self.b * other.b }
+        RGBColor {
+            r: self.r * other.r,
+            g: self.g * other.g,
+            b: self.b * other.b,
+        }
     }
 }

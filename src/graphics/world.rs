@@ -1,6 +1,6 @@
 use super::RGBColor;
-use crate::graphics::{Ray, GeometricObject};
 use crate::graphics::Point3D;
+use crate::graphics::{GeometricObject, Ray};
 use crate::shapes::Sphere;
 
 pub struct ViewPlane {
@@ -8,11 +8,17 @@ pub struct ViewPlane {
     vres: u32,
     ///Pixel size: Number of  in-world units corresponding to a pixel
     s: f64,
+    samples: u32,
 }
 
 impl ViewPlane {
-    pub fn new(hres: u32, vres: u32, s: f64) -> Self {
-        ViewPlane { hres, vres, s }
+    pub fn new(hres: u32, vres: u32, s: f64, samples: u32) -> Self {
+        ViewPlane {
+            hres,
+            vres,
+            s,
+            samples,
+        }
     }
 
     pub fn get_vres(&self) -> u32 {
@@ -27,6 +33,10 @@ impl ViewPlane {
     pub fn get_pixel_size(&self) -> f64 {
         self.s
     }
+
+    pub fn get_samples(&self) -> u32 {
+        self.samples
+    }
 }
 
 pub struct World<'a> {
@@ -37,7 +47,11 @@ pub struct World<'a> {
 
 impl<'a> World<'a> {
     pub fn new(v_plane: ViewPlane, bg_color: RGBColor) -> Self {
-        World { v_plane, bg_color, objects: Vec::new() }
+        World {
+            v_plane,
+            bg_color,
+            objects: Vec::new(),
+        }
     }
 
     pub fn get_objects_mut(&mut self) -> &mut Vec<Box<dyn GeometricObject + 'a>> {
@@ -56,4 +70,3 @@ impl<'a> World<'a> {
         &self.bg_color
     }
 }
-

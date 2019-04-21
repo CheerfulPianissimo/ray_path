@@ -12,14 +12,19 @@ pub struct Plane<'a> {
 
 impl<'a> Plane<'a> {
     pub fn new(a: Point3D, n: Normal3D, material: &'a Material) -> Self {
-        Plane { a, n: n.normalize(), material }
+        Plane {
+            a,
+            n: n.normalize(),
+            material,
+        }
     }
 }
 
 impl<'a> GeometricObject for Plane<'a> {
     fn check_hit(&self, ray: &Ray) -> Option<HitInfo> {
         let denominator = ray.d * self.n;
-        if denominator == 0.0 { //Ray is parallel to plane
+        if denominator == 0.0 {
+            //Ray is parallel to plane
             return Option::None;
         }
         let t = ((self.a - ray.o) * self.n) / denominator; //See https://en.wikipedia.org/wiki/Line%E2%80%93plane_intersection
@@ -67,18 +72,22 @@ impl<'a> GeometricObject for Sphere<'a> {
                 let hitpoint = ray.get_point_at(t1);
                 let normal = hitpoint - self.c;
                 //dbg!(normal);
-                return Some(HitInfo::new(t1,
-                                         Normal3D::from(normal).normalize()
-                                         , hitpoint));
+                return Some(HitInfo::new(
+                    t1,
+                    Normal3D::from(normal).normalize(),
+                    hitpoint,
+                ));
             }
             let t2 = (-b + discriminant.sqrt()) / 2.0 * a; //larger
 
             if t2 > K_EPSILON {
                 let hitpoint = ray.get_point_at(t2);
                 let normal = hitpoint - self.c;
-                return Some(HitInfo::new(t2,
-                                         Normal3D::from(normal).normalize(),
-                                         hitpoint));
+                return Some(HitInfo::new(
+                    t2,
+                    Normal3D::from(normal).normalize(),
+                    hitpoint,
+                ));
             } else {
                 //Both t1 and t2 are negative or 0
                 return None;
@@ -103,7 +112,12 @@ pub struct ThinDisc<'a> {
 
 impl<'a> ThinDisc<'a> {
     pub fn new(c: Point3D, r: f64, n: Normal3D, material: &'a Material) -> Self {
-        ThinDisc { c, n: n.normalize(), r, material }
+        ThinDisc {
+            c,
+            n: n.normalize(),
+            r,
+            material,
+        }
     }
 }
 
@@ -116,9 +130,11 @@ impl<'a> GeometricObject for ThinDisc<'a> {
                 let distance_from_center_sqr = (hitpoint - self.c) * (hitpoint - self.c);
                 if distance_from_center_sqr <= self.r * self.r {
                     Some(hitinfo)
-                } else { None }
+                } else {
+                    None
+                }
             }
-            None => None
+            None => None,
         }
     }
 
