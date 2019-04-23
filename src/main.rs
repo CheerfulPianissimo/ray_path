@@ -9,12 +9,12 @@ use image::{DynamicImage, GenericImage, Pixel, RgbaImage};
 use std::sync::mpsc::Sender;
 use std::any::Any;
 
-fn main2() {
+fn main() {
     let (sender, recv) = std::sync::mpsc::channel();
-    let (hres, vres, s) = (1366, 768, 1.0 / 300.0);
+    let (hres, vres, s,samples) = (1366, 768, 1.0 / 300.0,169);
     let sender_clone = sender.clone();
     std::thread::spawn(move || {
-        //setup_and_run(sender_clone, hres, vres, s, 169);
+        setup_and_run(sender_clone, hres, vres, s, samples);
     });
     let mut img = DynamicImage::new_rgb8(hres, vres);
     let mut total_array=vec![vec![RGBColor::new(0.0,0.0,0.0)
@@ -48,9 +48,7 @@ fn main2() {
     }
 }
 
-fn main() {
-    let (hres, vres, s) = (1366, 768, 1.0 / 300.0);
-    let samples=169;
+fn setup_and_run(sender: Sender<(PixelInfo)>,hres:u32,vres:u32,s:f64,samples:u32) {
 
     let metallic1 = MetallicMaterial::new(RGBColor::new(0.5, 0.5, 0.5), 0.5);
     let metallic2 = MetallicMaterial::new(RGBColor::new(1.0, 1.0, 1.0), 0.0);
@@ -85,5 +83,5 @@ fn main() {
     world.get_objects_mut().push(Box::new(disc));
 
     let tracer = SimpleTracer::new();
-    tracer.render(world).save("./img.jpeg").unwrap();
+    tracer.render(&world,sender);
 }

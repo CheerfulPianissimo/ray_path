@@ -21,67 +21,8 @@ impl SimpleTracer {
         SimpleTracer {}
     }
 
-    pub fn render(&self, world: World)->DynamicImage{
-        let  world = World::new(
-            ViewPlane::new(600, 600, 1.0/200.0, 169),
-            RGBColor::new(0.0, 0.0, 0.0),
-        );
-        let (sender, recv) = std::sync::mpsc::channel();
-        let num_cpu=2;
-        let vres = world.get_view_plane().get_vres();
-        let hres = world.get_view_plane().get_hres();
-        let section_height=vres/num_cpu;
-        let lowest_section_y=-(vres as i32/2);
-        let remaining_section_height=vres%num_cpu;
 
-        let world_ref=std::sync::Arc::new(world);
-
-        for i in 0..num_cpu{
-            let sender_clone = sender.clone();
-            let ref_clone=world_ref.clone();
-            std::thread::spawn(move ||{
-                SimpleTracer::render_image_section(&ref_clone,sender_clone,lowest_section_y+(i*section_height) as i32,
-                                                                lowest_section_y+((i+1)*section_height) as i32);
-            });
-        }
-
-        let mut img = DynamicImage::new_rgb8(hres, vres);
-        let mut total_array=vec![vec![RGBColor::new(0.0,0.0,0.0)
-                                      ; vres as usize];hres as usize];
-        loop{
-            match recv.recv().unwrap(){
-                PixelInfo::Pixel(x, y, color,samples_rendered)=>{
-                    total_array[x as usize][y as usize].r+=color.r;
-                    total_array[x as usize][y as usize].g+=color.g;
-                    total_array[x as usize][y as usize].b+=color.b;
-                    let pixel=total_array[x as usize][y as usize];
-                    //println!("{}",samples_rendered);
-                    let new_pixel=RGBColor::new(pixel.r/samples_rendered as f64,
-                                                pixel.g/samples_rendered as f64,pixel.b/samples_rendered as f64);
-                    img.put_pixel(x, y, image::Rgba::from_channels(
-                        new_pixel.r_in_8_bit(),
-                        new_pixel.g_in_8_bit(),
-                        new_pixel.b_in_8_bit(),
-                        255,
-                    ));
-                },
-                PixelInfo::SampleComplete(samples_rendered)=>{
-                    println!("Samples rendered: {} ",samples_rendered);
-                    img.save(format!("./img.jpeg")).unwrap();
-
-                },
-                PixelInfo::End=>{
-                    break;
-                }
-            }
-        }
-        img
-    }
-
-    ///lowY-in world co-ordinates of row from which to render
-    ///highY-in world co-ordinates of row upto which rendering should occur
-    fn render_image_section( world: &World, sender: Sender<(PixelInfo)>,
-                  lowY:i32,highY:i32) {
+    pub fn render(&self,world: &World, sender: Sender<(PixelInfo)>) {
         let z_plane = 5.0;
         let samples = world.get_view_plane().get_samples();
         let samples_sqrt = (samples as f64).sqrt() as u32;
@@ -97,7 +38,7 @@ impl SimpleTracer {
         for sub_y in 0..samples_sqrt {
             for sub_x in 0..samples_sqrt{
                 samples_rendered+=1;
-                for y in lowY..highY {
+                for y in -((vres / 2) as i32)..(vres / 2) as i32 {
                     /*let completion = ((y + vres as i32 / 2) * 100) / vres as i32;
                     if completion % 10 == 0 {
                         //print!("{}% ",completion);
@@ -117,7 +58,7 @@ impl SimpleTracer {
                             //Vector3D::new(0.0,0.0,-1.0));
                             ray_direction.normalize(),
                         );
-                        let mut pixel_color = SimpleTracer::trace_ray(&ray, &world, 20);
+                        let mut pixel_color = self.trace_ray(&ray, &world, 20);
                         pixel_color.r = pixel_color.r.sqrt();
                         pixel_color.g = pixel_color.g.sqrt();
                         pixel_color.b = pixel_color.b.sqrt();
@@ -140,7 +81,7 @@ impl SimpleTracer {
         sender.send(PixelInfo::End).unwrap();
     }
 
-    fn trace_ray( ray: &Ray, world: &World, depth: u32) -> RGBColor {
+    fn trace_ray(&self,ray: &Ray, world: &World, depth: u32) -> RGBColor {
         let (mut min_hitinfo, mut material) = (None, None);
         let mut min = std::f64::MAX;
         for object in world.get_objects() {
@@ -168,7 +109,7 @@ impl SimpleTracer {
                 //return material.unwrap().get_color().clone()
                 } else {
                     let (ray_out, attenuation) = material.unwrap().process(ray, &hit_info);
-                    return SimpleTracer::trace_ray(&ray_out, &world, depth - 1) * attenuation;
+                    return self.trace_ray(&ray_out, &world, depth - 1) * attenuation;
                 }
             }
             None => {
