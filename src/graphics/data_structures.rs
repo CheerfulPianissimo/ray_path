@@ -66,7 +66,11 @@ impl Normal3D {
     }
 
     pub fn normalize(&self) -> Normal3D {
-        let inverse = 1.0 / ((self.x * self.x + self.y * self.y + self.z * self.z).sqrt());
+        let dist_sqr=(self.x * self.x + self.y * self.y + self.z * self.z);
+        if dist_sqr>0.999999&&dist_sqr<1.000001{ //Already a normalized normal
+            return self.clone();
+        }
+        let inverse = 1.0 / (dist_sqr.sqrt());
         Normal3D {
             x: self.x * inverse,
             y: self.y * inverse,
@@ -107,6 +111,39 @@ impl Mul<Vector3D> for Normal3D {
     }
 }
 
+impl Mul<Vector3D> for &Normal3D {
+    type Output = f64;
+
+    fn mul(self, other: Vector3D) -> f64 {
+        self.x * other.x + self.y * other.y + self.z * other.z
+    }
+}
+
+//Scaling
+impl Mul<f64> for Normal3D {
+    type Output = Self;
+
+    fn mul(self, other: f64) -> Self {
+        Normal3D {
+            x: self.x * other,
+            y: self.y * other,
+            z: self.z * other,
+        }
+    }
+}
+
+impl Mul<f64> for &Normal3D {
+    type Output = Normal3D;
+
+    fn mul(self, other: f64) -> Normal3D {
+        Normal3D {
+            x: self.x * other,
+            y: self.y * other,
+            z: self.z * other,
+        }
+    }
+}
+
 impl From<Vector3D> for Normal3D {
     fn from(vec3: Vector3D) -> Self {
         Normal3D {
@@ -134,7 +171,11 @@ impl Vector3D {
     }
 
     pub fn normalize(&self) -> Vector3D {
-        let inverse = 1.0 / ((self.x * self.x + self.y * self.y + self.z * self.z).sqrt());
+        let dist_sqr=(self.x * self.x + self.y * self.y + self.z * self.z);
+        if dist_sqr>0.999999&&dist_sqr<1.000001{ //Already a normalized vector
+            return self.clone();
+        }
+        let inverse = 1.0 / (dist_sqr.sqrt());
         Vector3D {
             x: self.x * inverse,
             y: self.y * inverse,
@@ -239,14 +280,25 @@ impl Mul<Normal3D> for Vector3D {
 }
 
 impl From<Normal3D> for Vector3D {
-    fn from(vec3: Normal3D) -> Self {
+    fn from(norm: Normal3D) -> Self {
         Vector3D {
-            x: vec3.x,
-            y: vec3.y,
-            z: vec3.z,
+            x: norm.x,
+            y: norm.y,
+            z: norm.z,
         }
     }
 }
+
+impl From<&Normal3D> for Vector3D {
+    fn from(norm: &Normal3D) -> Self {
+        Vector3D {
+            x: norm.x,
+            y: norm.y,
+            z: norm.z,
+        }
+    }
+}
+
 
 #[derive(Debug, Copy, Clone)]
 pub struct RGBColor {

@@ -10,6 +10,10 @@ use std::sync::mpsc::Sender;
 use std::any::Any;
 
 fn main() {
+    println!("{:?}",refract2(
+        &Ray::new(Point3D::origin(),Vector3D::new(-1.0/2.0f64.sqrt(),1.0/2.0f64.sqrt(),0.0)),
+                &Normal3D::new(-1.0,0.0,0.0),1.3
+    ));
     let (sender, recv) = std::sync::mpsc::channel();
     let (hres, vres, s,samples) = (1366, 768, 1.0 / 300.0,169);
     let sender_clone = sender.clone();
@@ -38,7 +42,7 @@ fn main() {
             },
             PixelInfo::SampleComplete(samples_rendered)=>{
                 println!("Samples rendered: {} ",samples_rendered);
-                img.save(format!("./img.jpeg")).unwrap();
+                img.save(format!("./img2.jpeg")).unwrap();
 
             },
             PixelInfo::End=>{
@@ -53,20 +57,23 @@ fn setup_and_run(sender: Sender<(PixelInfo)>,hres:u32,vres:u32,s:f64,samples:u32
     let metallic1 = MetallicMaterial::new(RGBColor::new(0.5, 0.5, 0.5), 0.5);
     let metallic2 = MetallicMaterial::new(RGBColor::new(1.0, 1.0, 1.0), 0.0);
     let diffuse1 = LambertianMaterial::new(RGBColor::new(0.3, 0.2, 0.6));
-    let diffuse2 = LambertianMaterial::new(RGBColor::new(0.6, 0.6, 0.1));
+    let diffuse2 = LambertianMaterial::new(RGBColor::new(0.9, 0.5, 0.0));
+    let dielectric1=Dielectric::new(1.33);
 
-    let sphere = Sphere::new(Point3D::new(-2.0, -1.0, 0.0), 1.0, &metallic1);
-    let sphere2 = Sphere::new(Point3D::new(0.0, 1.0, -0.0), 1.0, &metallic1);
+
+    let sphere = Sphere::new(Point3D::new(-2.0, -1.0, 0.0), 1.0, &dielectric1);
+    let sphere2 = Sphere::new(Point3D::new(2.0, -1.0, 0.0), 1.0, &metallic1);
     let sphere3 = Sphere::new(Point3D::new(-0.0, -1.0, 0.0), 1.0, &metallic2);
     let sphere4 = Sphere::new(Point3D::new(0.0, -42.0, 0.0), 40.0, &diffuse2);
     let disc = ThinDisc::new(
         Point3D::new(3.0, 0.0, -2.0),
         2.0,
         Normal3D::new(-1.0, -0.3, 0.8),
+        //Normal3D::new(0.0,0.0,1.0),
         &metallic1,
     );
     let plane = Plane::new(
-        Point3D::new(0.0, -2.0, 0.0),
+        Point3D::new(0.0, 2.0, 0.0),
         Normal3D::new(0.0, 1.0, 0.0),
         &metallic2,
     );
