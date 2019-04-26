@@ -63,7 +63,13 @@ impl HitInfo {
 pub trait Material : Sync+Send {
     ///ray-normalised incoming ray
     ///returns outgoing normalized ray and attenuation
-    fn process(&self, ray_in: &Ray, hitinfo: &HitInfo) -> (Ray, RGBColor);
+    fn process(&self, ray_in: &Ray, hitinfo: &HitInfo) -> Option<(Ray, RGBColor)>{
+        None
+    }
+
+    fn get_emitted(&self) ->RGBColor{
+        RGBColor::new(0.0,0.0,0.0)
+    }
 }
 
 pub struct LambertianMaterial {
@@ -77,7 +83,7 @@ impl LambertianMaterial {
 }
 
 impl Material for LambertianMaterial {
-    fn process(&self, _ray_in: &Ray, hit_info: &HitInfo) -> (Ray, RGBColor) {
+    fn process(&self, _ray_in: &Ray, hit_info: &HitInfo) -> Option<(Ray, RGBColor)> {
         let hit_point = hit_info.get_hitpoint();
         let mut rng = rand::thread_rng();
         let random_unit_vec = Vector3D::new(
@@ -88,7 +94,7 @@ impl Material for LambertianMaterial {
         .normalize();
         let ray_out =
             (Vector3D::from(hit_info.get_normal().normalize()) + random_unit_vec).normalize();
-        (Ray::new(hit_point.clone(), ray_out), self.albedo)
+        Some((Ray::new(hit_point.clone(), ray_out), self.albedo))
     }
 }
 
@@ -104,7 +110,7 @@ impl MetallicMaterial {
 }
 
 impl Material for MetallicMaterial {
-    fn process(&self, ray_in: &Ray, hit_info: &HitInfo) -> (Ray, RGBColor) {
+    fn process(&self, ray_in: &Ray, hit_info: &HitInfo) -> Option<(Ray, RGBColor)> {
         let hit_point = hit_info.get_hitpoint();
         let mut rng = rand::thread_rng();
         let random_unit_vec = Vector3D::new(
@@ -117,10 +123,10 @@ impl Material for MetallicMaterial {
         //Reflect
         let new_dir =reflect(&ray_in,hit_info.get_normal());
         let scattered = new_dir + random_unit_vec * self.fuzziness;
-        return (
+        Some( (
             Ray::new(hit_point.clone(), scattered.normalize()),
             self.albedo,
-        );
+        ))
     }
 }
 
@@ -180,7 +186,7 @@ impl Dielectric {
 }
 
 impl Material for Dielectric{
-    fn process(&self, ray_in: &Ray, hitinfo: &HitInfo) -> (Ray, RGBColor) {
+    fn process(&self, ray_in: &Ray, hitinfo: &HitInfo) -> Option<(Ray, RGBColor)> {
         let ray_in_d=ray_in.d.normalize();
         let normal=hitinfo.get_normal();
         let (surface_normal,refractive_index,cosine)=
@@ -206,6 +212,24 @@ impl Material for Dielectric{
                 },
                 None=>{reflect(&ray_in,&surface_normal)}
             };
-        (Ray::new(hitinfo.get_hitpoint().clone(),ray_out_d),attenuation)
+        Some((Ray::new(hitinfo.get_hitpoint().clone(),ray_out_d),attenuation))
+    }
+}
+
+pub struct DiffuseLight{
+    emitcolor:RGBColor
+}
+
+impl DiffuseLight {
+    pub fn new(emitcolor: RGBColor) -> Self {
+        DiffuseLight { emitcolor }
+    }
+}
+
+
+impl Material for DiffuseLight{
+
+    fn get_emitted(&self) -> RGBColor {
+        self.emitcolor
     }
 }

@@ -74,7 +74,7 @@ impl SimpleTracer {
                             .unwrap();
                     }
                 }
-                sender.send(PixelInfo::SampleComplete(samples_rendered));
+                sender.send(PixelInfo::SampleComplete(samples_rendered)).unwrap();
             }
         }
 
@@ -108,8 +108,12 @@ impl SimpleTracer {
                     RGBColor::from(colorvec)
                 //return material.unwrap().get_color().clone()
                 } else {
-                    let (ray_out, attenuation) = material.unwrap().process(ray, &hit_info);
-                    return self.trace_ray(&ray_out, &world, depth - 1) * attenuation;
+                    if let Some((ray_out, attenuation)) = material.unwrap().process(ray, &hit_info) {
+                        return self.trace_ray(&ray_out, &world, depth - 1) * attenuation
+                            + material.unwrap().get_emitted();
+                    }else{
+                        return material.unwrap().get_emitted();
+                    }
                 }
             }
             None => {
@@ -117,8 +121,8 @@ impl SimpleTracer {
                 let y = ray.d.y();
                 let t = (y + 1.0) * 0.5;
                 //assert!(t<1.0&&t>0.0);
-                let blue = Vector3D::new(0.4, 0.4, 1.0);
-                let white = Vector3D::new(1.0, 1.0, 1.0);
+                let blue = Vector3D::new(0.1, 0.1, 0.25);
+                let white = Vector3D::new(0.1, 0.1, 0.1);
                 let colorvec = white * (1.0 - t) + blue * t;
                 RGBColor::from(colorvec)
                 //world.get_bg_color().clone()

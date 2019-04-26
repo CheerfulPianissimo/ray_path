@@ -313,15 +313,15 @@ impl RGBColor {
     }
 
     pub fn r_in_8_bit(&self) -> u8 {
-        (self.r * 255.0) as u8
+        (((self.r * 255.0) as u32)%256) as u8
     }
 
     pub fn g_in_8_bit(&self) -> u8 {
-        (self.g * 255.0) as u8
+        (((self.g * 255.0) as u32)%256) as u8
     }
 
     pub fn b_in_8_bit(&self) -> u8 {
-        (self.b * 255.0) as u8
+        (((self.b * 255.0) as u32)%256) as u8
     }
 }
 
@@ -355,6 +355,19 @@ impl Mul for RGBColor {
             r: self.r * other.r,
             g: self.g * other.g,
             b: self.b * other.b,
+        }
+    }
+}
+
+
+impl Add for RGBColor {
+    type Output = RGBColor;
+
+    fn add(self, other: Self) -> Self {
+        RGBColor {
+            r: self.r + other.r,
+            g: self.g + other.g,
+            b: self.b + other.b,
         }
     }
 }
