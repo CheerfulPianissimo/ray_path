@@ -39,13 +39,13 @@ impl ViewPlane {
     }
 }
 
-pub struct World<'a> {
+pub struct World {
     v_plane: ViewPlane,
     bg_color: RGBColor,
-    objects: Vec<Box<dyn GeometricObject + 'a>>,
+    objects: Vec<Box<dyn GeometricObject >>,
 }
 
-impl<'a> World<'a> {
+impl World {
     pub fn new(v_plane: ViewPlane, bg_color: RGBColor) -> Self {
         World {
             v_plane,
@@ -54,11 +54,11 @@ impl<'a> World<'a> {
         }
     }
 
-    pub fn get_objects_mut(&mut self) -> &mut Vec<Box<dyn GeometricObject + 'a>> {
+    pub fn get_objects_mut(&mut self) -> &mut Vec<Box<dyn GeometricObject>> {
         &mut self.objects
     }
 
-    pub fn get_objects(&self) -> &Vec<Box<dyn GeometricObject + 'a>> {
+    pub fn get_objects(&self) -> &Vec<Box<dyn GeometricObject>> {
         &self.objects
     }
 

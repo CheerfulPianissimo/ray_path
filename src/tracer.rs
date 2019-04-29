@@ -108,11 +108,12 @@ impl SimpleTracer {
                     RGBColor::from(colorvec)
                 //return material.unwrap().get_color().clone()
                 } else {
-                    if let Some((ray_out, attenuation)) = material.unwrap().process(ray, &hit_info) {
+                    let material=material.unwrap();
+                    if let Some((ray_out, attenuation)) = material.process(ray, &hit_info) {
                         return self.trace_ray(&ray_out, &world, depth - 1) * attenuation
-                            + material.unwrap().get_emitted();
+                            + material.get_emitted();
                     }else{
-                        return material.unwrap().get_emitted();
+                        return material.get_emitted();
                     }
                 }
             }

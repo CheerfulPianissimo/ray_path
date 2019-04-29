@@ -1,17 +1,17 @@
 use crate::graphics::*;
-
+use std::rc::Rc;
 const K_EPSILON: f64 = 0.00001;
 
-pub struct Plane<'a> {
+pub struct Plane {
     ///A point on the plane
     a: Point3D,
     ///A normalised Normal to the plane
     n: Normal3D,
-    material: &'a Material,
+    material: Rc<dyn Material>,
 }
 
-impl<'a> Plane<'a> {
-    pub fn new(a: Point3D, n: Normal3D, material: &'a Material) -> Self {
+impl Plane {
+    pub fn new(a: Point3D, n: Normal3D, material: Rc<dyn Material>) -> Self {
         Plane {
             a,
             n: n.normalize(),
@@ -20,7 +20,7 @@ impl<'a> Plane<'a> {
     }
 }
 
-impl<'a> GeometricObject for Plane<'a> {
+impl GeometricObject for Plane {
     fn check_hit(&self, ray: &Ray) -> Option<HitInfo> {
         let denominator = ray.d * self.n;
         if denominator == 0.0 {
@@ -35,26 +35,26 @@ impl<'a> GeometricObject for Plane<'a> {
         }
     }
 
-    fn get_material(&self) -> &Material {
-        self.material
+    fn get_material(&self) ->  Rc<dyn Material>{
+        Rc::clone(&self.material)
     }
 }
 
-pub struct Sphere<'a> {
+pub struct Sphere {
     ///Center of sphere
     c: Point3D,
     ///Radius of sphere
     r: f64,
-    material: &'a Material,
+    material: Rc<dyn Material>,
 }
 
-impl<'a> Sphere<'a> {
-    pub fn new(c: Point3D, r: f64, material: &'a Material) -> Self {
+impl Sphere {
+    pub fn new(c: Point3D, r: f64, material: Rc<dyn Material>) -> Self {
         Sphere { c, r, material }
     }
 }
 
-impl<'a> GeometricObject for Sphere<'a> {
+impl GeometricObject for Sphere {
     fn check_hit(&self, ray: &Ray) -> Option<HitInfo> {
         let distance = ray.o - self.c;
         let a = ray.d * ray.d;
@@ -95,23 +95,23 @@ impl<'a> GeometricObject for Sphere<'a> {
         }
     }
 
-    fn get_material(&self) -> &Material {
-        self.material
+    fn get_material(&self) ->  Rc<dyn Material>{
+        Rc::clone(&self.material)
     }
 }
 
-pub struct ThinDisc<'a> {
+pub struct ThinDisc {
     ///Center of the disc
     c: Point3D,
     ///A normalised Normal to the disc
     n: Normal3D,
     ///Radius of disk
     r: f64,
-    material: &'a Material,
+    material: Rc<dyn Material>,
 }
 
-impl<'a> ThinDisc<'a> {
-    pub fn new(c: Point3D, r: f64, n: Normal3D, material: &'a Material) -> Self {
+impl ThinDisc {
+    pub fn new(c: Point3D, r: f64, n: Normal3D, material: Rc<dyn Material>) -> Self {
         ThinDisc {
             c,
             n: n.normalize(),
@@ -121,9 +121,9 @@ impl<'a> ThinDisc<'a> {
     }
 }
 
-impl<'a> GeometricObject for ThinDisc<'a> {
+impl GeometricObject for ThinDisc {
     fn check_hit(&self, ray: &Ray) -> Option<HitInfo> {
-        let plane = Plane::new(self.c, self.n, self.material);
+        let plane = Plane::new(self.c, self.n, Rc::clone(&self.material));
         match plane.check_hit(ray) {
             Some(hitinfo) => {
                 let hitpoint = *hitinfo.get_hitpoint();
@@ -138,7 +138,7 @@ impl<'a> GeometricObject for ThinDisc<'a> {
         }
     }
 
-    fn get_material(&self) -> &Material {
-        self.material
+    fn get_material(&self) ->  Rc<dyn Material>{
+        Rc::clone(&self.material)
     }
 }

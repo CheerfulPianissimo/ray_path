@@ -4,6 +4,7 @@ mod world;
 pub use self::data_structures::*;
 pub use self::world::*;
 use rand::{thread_rng, Rng};
+use std::rc::Rc;
 
 ///Infinite Ray represented by p=o+td
 pub struct Ray {
@@ -23,10 +24,10 @@ impl Ray {
     }
 }
 
-pub trait GeometricObject : Send+Sync{
+pub trait GeometricObject : /*Send+Sync*/{
     fn check_hit(&self, ray: &Ray) -> Option<HitInfo>;
 
-    fn get_material(&self) -> &Material;
+    fn get_material(&self) -> Rc<dyn Material>;
 }
 
 #[derive(Debug)]
