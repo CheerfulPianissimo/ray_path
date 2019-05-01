@@ -9,7 +9,7 @@ use std::rc::Rc;
 use image::{DynamicImage, GenericImage, Pixel, RgbaImage};
 use std::sync::mpsc::Sender;
 
-fn main() {
+/*fn main1() {
     let (sender, recv) = std::sync::mpsc::channel();
     let (hres, vres, s,samples) = (1366, 768, 1.0 / (300.0),4);
     let sender_clone = sender.clone();
@@ -46,17 +46,16 @@ fn main() {
             }
         }
     }
-}
+}*/
 
-fn setup_and_run(sender: Sender<(PixelInfo)>,hres:u32,vres:u32,s:f64,samples:u32) {
-    let world=get_world(hres, vres, s, samples);
-
+fn main() {
     let tracer = SimpleTracer::new();
-    tracer.render(&world,sender);
+    tracer.render(Box::new(get_world));
 }
 
 
-fn get_world(hres:u32,vres:u32,s:f64,samples:u32)->World{
+fn get_world()->World{
+    let (hres, vres, s,samples) = (1366, 768, 1.0 / (300.0),144);
     let metallic1 = Rc::new(MetallicMaterial::new(RGBColor::new(0.5, 0.5, 0.5), 0.5));
     let metallic2 = Rc::new(MetallicMaterial::new(RGBColor::new(1.0, 1.0, 1.0), 0.0));
     let diffuse1 = Rc::new(LambertianMaterial::new(RGBColor::new(0.3, 0.2, 0.6)));
@@ -66,15 +65,15 @@ fn get_world(hres:u32,vres:u32,s:f64,samples:u32)->World{
 
 
     let sphere1 = Sphere::new(Point3D::new(-2.0, -1.0, 0.0), 1.0, metallic2.clone());
-    let sphere2 = Sphere::new(Point3D::new(2.0, -1.0, 0.0), 0.3, emit1);
+    let sphere2 = Sphere::new(Point3D::new(2.0, -1.0, 0.0), 1.0, diffuse1.clone());
     let sphere3 = Sphere::new(Point3D::new(-0.0, -1.0, 0.0), 1.0, dielectric1);
-    let sphere4 = Sphere::new(Point3D::new(0.0, -42.0, 0.0), 40.0, diffuse2);
+    let sphere4 = Sphere::new(Point3D::new(0.0, -42.0, 0.0), 40.0, diffuse2.clone());
     let disc = ThinDisc::new(
         Point3D::new(3.0, 0.0, -1.2),
         2.0,
         Normal3D::new(-1.0, -0.3, 0.8),
         //Normal3D::new(0.0,0.0,1.0),
-        metallic2.clone(),
+        diffuse1.clone()
     );
     let plane = Plane::new(
         Point3D::new(0.0, 2.0, 0.0),

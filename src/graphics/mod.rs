@@ -61,7 +61,7 @@ impl HitInfo {
     }
 }
 
-pub trait Material : Sync+Send {
+pub trait Material /*: Send*/ {
     ///ray-normalised incoming ray
     ///returns outgoing normalized ray and attenuation
     fn process(&self, ray_in: &Ray, hitinfo: &HitInfo) -> Option<(Ray, RGBColor)>{

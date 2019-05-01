@@ -3,8 +3,10 @@ name = "ray_path"
 version = "0.1.0"
 authors = ["deuce314"]
 edition = "2018"
-
+[profile.release]
+debug=1
 [dependencies]
 image = "0.21.1"
-rand="*"
-rayon = "1.0.3"
+rand="0.6.5"
+num_cpus = "1.10.0"
+crossbeam = "0.7.1"
