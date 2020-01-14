@@ -50,13 +50,16 @@ use std::sync::mpsc::Sender;
 
 fn main() {
     let tracer = SimpleTracer::new();
-    tracer.render(Box::new(get_world));
+    for t in 0..400{
+        println!("Completed frames {}",t+1);
+        tracer.render(Box::new(get_world),&format!("./render/img{:06}.jpeg",t),t as f64/5.0);
+    }
 }
 
 
-fn get_world()->World{
-    let (hres, vres, s,samples) = (1366, 768, 1.0 / (300.0),144);
-    let metallic1 = Rc::new(MetallicMaterial::new(RGBColor::new(0.5, 0.5, 0.5), 0.5));
+fn get_world(t:f64)->World{
+    let (hres, vres, s,samples) = (600, 400, 1.0 / (100.0+t/5.0),64);
+    let metallic1 = Rc::new(MetallicMaterial::new(RGBColor::new(0.5, 0.5, 0.5), 0.5*t.sin()+0.5));
     let metallic2 = Rc::new(MetallicMaterial::new(RGBColor::new(1.0, 1.0, 1.0), 0.0));
     let diffuse1 = Rc::new(LambertianMaterial::new(RGBColor::new(0.3, 0.2, 0.6)));
     let diffuse2 = Rc::new(LambertianMaterial::new(RGBColor::new(0.9, 0.5, 0.0)));
@@ -64,16 +67,16 @@ fn get_world()->World{
     let emit1 = Rc::new(DiffuseLight::new(RGBColor::new(1.0, 1.0, 1.0)));
 
 
-    let sphere1 = Sphere::new(Point3D::new(-2.0, -1.0, 0.0), 1.0, metallic2.clone());
-    let sphere2 = Sphere::new(Point3D::new(2.0, -1.0, 0.0), 1.0, diffuse1.clone());
-    let sphere3 = Sphere::new(Point3D::new(-0.0, -1.0, 0.0), 1.0, dielectric1);
+    let sphere1 = Sphere::new(Point3D::new(-2.0, -1.0+(t/20.0).powi(2), 0.0), 1.0, metallic2.clone());
+    let sphere2 = Sphere::new(Point3D::new(2.0, -1.0*t.sin(), 0.0), 1.0, diffuse1.clone());
+    let sphere3 = Sphere::new(Point3D::new(t.cos(), -1.0*t.sin(), t.sin()), 1.0, dielectric1);
     let sphere4 = Sphere::new(Point3D::new(0.0, -42.0, 0.0), 40.0, diffuse2.clone());
     let disc = ThinDisc::new(
         Point3D::new(3.0, 0.0, -1.2),
         2.0,
-        Normal3D::new(-1.0, -0.3, 0.8),
+        Normal3D::new(-1.0, -0.3*t.sin(), 0.8),
         //Normal3D::new(0.0,0.0,1.0),
-        diffuse1.clone()
+        metallic1.clone()
     );
     let plane = Plane::new(
         Point3D::new(0.0, 2.0, 0.0),

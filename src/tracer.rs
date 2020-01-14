@@ -1,11 +1,11 @@
-use super::{Material, RGBColor};
+use super::RGBColor;
 use crate::graphics::{
-    GeometricObject, HitInfo, Normal3D, Point3D, Ray, Vector3D, ViewPlane, World,
+     Point3D, Ray, Vector3D, World,
 };
-use image::{DynamicImage, GenericImage, Pixel, RgbaImage};
+use image::{DynamicImage, GenericImage, Pixel};
 use std::sync::Arc;
 use rand::Rng;
-use crossbeam::channel::{unbounded,Sender,Receiver};
+use crossbeam::channel::{unbounded,Sender};
 
 pub enum PixelInfo {
     ///x,y,pixel color, sample_no
@@ -22,11 +22,12 @@ impl SimpleTracer {
     }
 
 
-    pub fn render(&self, worldfunc:Box<Fn()->World + Sync+Send>){
+    pub fn render(&self, worldfunc:Box<dyn Fn(f64)->World + Sync+Send>,path:&String,t:f64){
         let (sender, recv) =unbounded();
 
-        let world=worldfunc();
+        let world=worldfunc(t);
         let num_cpu = num_cpus::get() as u32;
+	    //println!("cores {}",num_cpu);
         let vres = world.get_view_plane().get_vres();
         let hres = world.get_view_plane().get_hres();
         let samples=world.get_view_plane().get_samples();
@@ -39,7 +40,7 @@ impl SimpleTracer {
             let sender_clone = sender.clone();
             let ref_clone=Arc::clone(&fn_ref);
             std::thread::spawn(move ||{
-                let world=ref_clone();
+                let world=ref_clone(t);
                 SimpleTracer::render_image_section(&world,sender_clone,lowest_section_y+(i*section_height) as i32,
                                                    lowest_section_y+((i+1)*section_height) as i32,i);
             });
@@ -63,13 +64,13 @@ impl SimpleTracer {
                     total_array[x as usize][y as usize].b+=color.b;
 
                 },
-                PixelInfo::SampleComplete(samples_rendered,threadNo)=>{
-                    samples_rendered_array[threadNo as usize]+=1.0;
+                PixelInfo::SampleComplete(samples_rendered,thread_No)=>{
+                    samples_rendered_array[thread_No as usize]+=1.0;
 
                     let avg=samples_rendered_array.iter().sum::<f64>() as f64/num_cpu as f64;
                     let percent=avg*100.0/samples as f64;
 
-                    if percent.floor() as u32%10<1{
+                    if percent.floor() as u32%10==0 && percent-percent.floor()<0.1{
                         let mut img = DynamicImage::new_rgb8(hres, vres);
                         for x in 0..hres{
                             for y in 0..vres{
@@ -89,8 +90,8 @@ impl SimpleTracer {
                                 ));
                             }
                         }
-                        println!("Completed {}",percent);
-                        img.save(format!("./img.jpeg")).unwrap();
+                        //println!("Completed {}%",percent.floor() as u32);
+                        img.save(path).unwrap();
                     }
                 },
                 PixelInfo::End(_threadNo)=>{
@@ -158,7 +159,7 @@ impl SimpleTracer {
                             .unwrap();
                     }
                 }
-                sender.send(PixelInfo::SampleComplete(samples_rendered,threadNo));
+                sender.send(PixelInfo::SampleComplete(samples_rendered,threadNo)).unwrap();
             }
         }
 

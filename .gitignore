@@ -1,2 +1,5 @@
 /target
 **/*.rs.bk
+/render/*.jpeg
+/render/*.mp4
+tasks.json
