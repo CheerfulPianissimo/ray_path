@@ -9,48 +9,9 @@ use std::rc::Rc;
 use image::{DynamicImage, GenericImage, Pixel, RgbaImage};
 use std::sync::mpsc::Sender;
 
-/*fn main1() {
-    let (sender, recv) = std::sync::mpsc::channel();
-    let (hres, vres, s,samples) = (1366, 768, 1.0 / (300.0),4);
-    let sender_clone = sender.clone();
-    std::thread::spawn(move || {
-        setup_and_run(sender_clone, hres, vres, s, samples);
-    });
-    let mut img = DynamicImage::new_rgb8(hres, vres);
-    let mut total_array=vec![vec![RGBColor::new(0.0,0.0,0.0)
-                                  ; vres as usize];hres as usize];
-    loop{
-        match recv.recv().unwrap(){
-            PixelInfo::Pixel(x, y, color,samples_rendered)=>{
-                total_array[x as usize][y as usize].r+=color.r;
-                total_array[x as usize][y as usize].g+=color.g;
-                total_array[x as usize][y as usize].b+=color.b;
-                let pixel=total_array[x as usize][y as usize];
-                //println!("{}",samples_rendered);
-                let new_pixel=RGBColor::new(pixel.r/samples_rendered as f64,
-                                            pixel.g/samples_rendered as f64,pixel.b/samples_rendered as f64);
-                img.put_pixel(x, y, image::Rgba::from_channels(
-                    new_pixel.r_in_8_bit(),
-                    new_pixel.g_in_8_bit(),
-                    new_pixel.b_in_8_bit(),
-                    255,
-                ));
-            },
-            PixelInfo::SampleComplete(samples_rendered)=>{
-                println!("Samples rendered: {} ",samples_rendered);
-                img.save(format!("./img.jpeg")).unwrap();
-
-            },
-            PixelInfo::End=>{
-                break;
-            }
-        }
-    }
-}*/
-
 fn main() {
     let tracer = SimpleTracer::new();
-    for t in 0..400{
+    for t in 0..10{
         println!("Completed frames {}",t+1);
         tracer.render(Box::new(get_world),&format!("./render/img{:06}.jpeg",t),t as f64/5.0);
     }
@@ -58,7 +19,7 @@ fn main() {
 
 
 fn get_world(t:f64)->World{
-    let (hres, vres, s,samples) = (600, 400, 1.0 / (100.0+t/5.0),64);
+    let (hres, vres, s,samples) = (1920, 1080, 1.0 / (400.0+t/5.0),64);
     let metallic1 = Rc::new(MetallicMaterial::new(RGBColor::new(0.5, 0.5, 0.5), 0.5*t.sin()+0.5));
     let metallic2 = Rc::new(MetallicMaterial::new(RGBColor::new(1.0, 1.0, 1.0), 0.0));
     let diffuse1 = Rc::new(LambertianMaterial::new(RGBColor::new(0.3, 0.2, 0.6)));
@@ -67,9 +28,9 @@ fn get_world(t:f64)->World{
     let emit1 = Rc::new(DiffuseLight::new(RGBColor::new(1.0, 1.0, 1.0)));
 
 
-    let sphere1 = Sphere::new(Point3D::new(-2.0, -1.0+(t/20.0).powi(2), 0.0), 1.0, metallic2.clone());
+    let sphere1 = Sphere::new(Point3D::new(41.0*(t/5.0).cos(), -42.0+41.0*(t/5.0).sin(), 0.0), 1.0, metallic2.clone());
     let sphere2 = Sphere::new(Point3D::new(2.0, -1.0*t.sin(), 0.0), 1.0, diffuse1.clone());
-    let sphere3 = Sphere::new(Point3D::new(t.cos(), -1.0*t.sin(), t.sin()), 1.0, dielectric1);
+    let sphere3 = Sphere::new(Point3D::new(-41.0*(t/5.0).cos(), -42.0+41.0*(t/5.0).sin(), t.sin()), 1.0, dielectric1);
     let sphere4 = Sphere::new(Point3D::new(0.0, -42.0, 0.0), 40.0, diffuse2.clone());
     let disc = ThinDisc::new(
         Point3D::new(3.0, 0.0, -1.2),
