@@ -5,9 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3f0ca155-28ea-450d-af5c-0072171e770e" name="Default Changelist" comment="README added">
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/render/img000000.jpeg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/render/img000000.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/render/img000000.jpeg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -95,6 +95,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="RESET_MODE" value="HARD" />
     <option name="SET_USER_NAME_GLOBALLY" value="false" />
+    <option name="SIGN_OFF_COMMIT" value="true" />
   </component>
   <component name="GitSEFilterConfiguration">
     <file-type-list>
@@ -353,7 +354,21 @@
       <option name="project" value="LOCAL" />
       <updated>1636892076693</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="README added">
+      <created>1636892267943</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1636892267943</updated>
+    </task>
+    <task id="LOCAL-00025" summary="README added">
+      <created>1636892380902</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1636892380902</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TodoView">
