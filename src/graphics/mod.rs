@@ -3,7 +3,7 @@ mod world;
 
 pub use self::data_structures::*;
 pub use self::world::*;
-use rand::{thread_rng, Rng};
+use rand::Rng;
 use std::rc::Rc;
 
 ///Infinite Ray represented by p=o+td

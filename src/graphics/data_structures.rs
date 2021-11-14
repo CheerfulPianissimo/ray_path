@@ -66,7 +66,7 @@ impl Normal3D {
     }
 
     pub fn normalize(&self) -> Normal3D {
-        let dist_sqr=(self.x * self.x + self.y * self.y + self.z * self.z);
+        let dist_sqr=self.x * self.x + self.y * self.y + self.z * self.z;
         if dist_sqr>0.999999&&dist_sqr<1.000001{ //Already a normalized normal
             return self.clone();
         }
@@ -79,7 +79,7 @@ impl Normal3D {
     }
 
     pub fn magnitude_sqr(&self) -> f64 {
-        (self.x * self.x + self.y * self.y + self.z * self.z)
+        self.x * self.x + self.y * self.y + self.z * self.z
     }
 
     pub fn x(&self) -> f64 {
@@ -171,7 +171,7 @@ impl Vector3D {
     }
 
     pub fn normalize(&self) -> Vector3D {
-        let dist_sqr=(self.x * self.x + self.y * self.y + self.z * self.z);
+        let dist_sqr=self.x * self.x + self.y * self.y + self.z * self.z;
         if dist_sqr>0.999999&&dist_sqr<1.000001{ //Already a normalized vector
             return self.clone();
         }
@@ -184,7 +184,7 @@ impl Vector3D {
     }
 
     pub fn magnitude_sqr(&self) -> f64 {
-        (self.x * self.x + self.y * self.y + self.z * self.z)
+        self.x * self.x + self.y * self.y + self.z * self.z
     }
 
     pub fn x(&self) -> f64 {

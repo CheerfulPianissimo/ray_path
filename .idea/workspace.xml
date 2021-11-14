@@ -4,11 +4,7 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3f0ca155-28ea-450d-af5c-0072171e770e" name="Default Changelist" comment="Multithreading at last!">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/ray_path.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/ray_path.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+    <list default="true" id="3f0ca155-28ea-450d-af5c-0072171e770e" name="Default Changelist" comment="Prepare for github upload">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.rs" afterDir="false" />
     </list>
@@ -334,7 +330,14 @@
       <option name="project" value="LOCAL" />
       <updated>1556719516582</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="Prepare for github upload">
+      <created>1636881181668</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1636881181668</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TodoView">
@@ -391,7 +394,8 @@
     <MESSAGE value="Lights!" />
     <MESSAGE value="Some refactoring to use Rc and make materials owned by objects" />
     <MESSAGE value="Multithreading at last!" />
-    <option name="LAST_COMMIT_MESSAGE" value="Multithreading at last!" />
+    <MESSAGE value="Prepare for github upload" />
+    <option name="LAST_COMMIT_MESSAGE" value="Prepare for github upload" />
   </component>
   <component name="masterDetails">
     <states>

@@ -1,7 +1,5 @@
 use super::RGBColor;
-use crate::graphics::Point3D;
-use crate::graphics::{GeometricObject, Ray};
-use crate::shapes::Sphere;
+use crate::graphics::GeometricObject;
 
 pub struct ViewPlane {
     hres: u32,

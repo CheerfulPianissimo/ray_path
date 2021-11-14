@@ -33,7 +33,6 @@ impl SimpleTracer {
         let samples=world.get_view_plane().get_samples();
         let section_height=vres/num_cpu;
         let lowest_section_y=-(vres as i32/2);
-        let remaining_section_height=vres%num_cpu;
 
         let fn_ref=Arc::new(worldfunc);
         for i in 0..num_cpu{
@@ -64,8 +63,8 @@ impl SimpleTracer {
                     total_array[x as usize][y as usize].b+=color.b;
 
                 },
-                PixelInfo::SampleComplete(samples_rendered,thread_No)=>{
-                    samples_rendered_array[thread_No as usize]+=1.0;
+                PixelInfo::SampleComplete(_samples_rendered, thread_no)=>{
+                    samples_rendered_array[thread_no as usize]+=1.0;
 
                     let avg=samples_rendered_array.iter().sum::<f64>() as f64/num_cpu as f64;
                     let percent=avg*100.0/samples as f64;
@@ -93,8 +92,8 @@ impl SimpleTracer {
                         //println!("Completed {}%",percent.floor() as u32);
                         img.save(path).unwrap();
                     }
-                },
-                PixelInfo::End(_threadNo)=>{
+                }
+                PixelInfo::End(_thread_no)=>{
                     threads_completed+=1;
                     if threads_completed==num_cpu {
                         break;
@@ -104,10 +103,10 @@ impl SimpleTracer {
         }
     }
 
-    ///lowY-in world co-ordinates of row from which to render
-    ///highY-in world co-ordinates of row upto which rendering should occur
+    ///low_y-in world co-ordinates of row from which to render
+    ///high_y-in world co-ordinates of row upto which rendering should occur
     fn render_image_section(world: &World, sender: Sender<PixelInfo>,
-                             lowY:i32,highY:i32, threadNo:u32) {
+                            low_y:i32, high_y:i32, thread_no:u32) {
         let z_plane = 5.0;
         let samples = world.get_view_plane().get_samples();
         let samples_sqrt = (samples as f64).sqrt() as u32;
@@ -116,14 +115,13 @@ impl SimpleTracer {
         let hres = world.get_view_plane().get_hres();
         let pixel_size = world.get_view_plane().get_pixel_size();
         let mut rng = rand::thread_rng();
-        let (mut sub_x,mut sub_y)=(0,0);
         let sub_pixel_size = pixel_size / samples_sqrt as f64;
         let mut samples_rendered=0;
 
         for sub_y in 0..samples_sqrt {
             for sub_x in 0..samples_sqrt{
                 samples_rendered+=1;
-                for y in lowY..highY {
+                for y in low_y..high_y {
                     /*let completion = ((y + vres as i32 / 2) * 100) / vres as i32;
                     if completion % 10 == 0 {
                         //print!("{}% ",completion);
@@ -159,11 +157,11 @@ impl SimpleTracer {
                             .unwrap();
                     }
                 }
-                sender.send(PixelInfo::SampleComplete(samples_rendered,threadNo)).unwrap();
+                sender.send(PixelInfo::SampleComplete(samples_rendered, thread_no)).unwrap();
             }
         }
 
-        sender.send(PixelInfo::End(threadNo)).unwrap();
+        sender.send(PixelInfo::End(thread_no)).unwrap();
     }
 
     fn trace_ray(ray: &Ray, world: &World, depth: u32) -> RGBColor {
