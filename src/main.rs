@@ -17,7 +17,7 @@ fn main() {
 
 
 fn get_world(t:f64)->World{
-    let (hres, vres, s,samples) = (1920, 1080, 1.0 / (400.0+t/5.0),64);
+    let (hres, vres, s,samples) = (800, 800, 1.0 / (200.0+t/5.0),64);
     let metallic1 = Rc::new(MetallicMaterial::new(RGBColor::new(0.5, 0.5, 0.5), 0.5*t.sin()+0.5));
     let metallic2 = Rc::new(MetallicMaterial::new(RGBColor::new(1.0, 1.0, 1.0), 0.0));
     let diffuse1 = Rc::new(LambertianMaterial::new(RGBColor::new(0.3, 0.2, 0.6)));
@@ -38,8 +38,8 @@ fn get_world(t:f64)->World{
         metallic1.clone()
     );
     /*let plane = Plane::new(
-        Point3D::new(0.0, 2.0, 0.0),
-        Normal3D::new(0.0, 1.0, 0.0),
+        Point3D::new(0.0, 2.0, -5.0),
+        Normal3D::new(0.0, 1.0, 1.0),
         metallic2.clone(),
     );*/
 
