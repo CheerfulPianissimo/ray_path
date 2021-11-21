@@ -4,11 +4,8 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3f0ca155-28ea-450d-af5c-0072171e770e" name="Default Changelist" comment="README added">
+    <list default="true" id="3f0ca155-28ea-450d-af5c-0072171e770e" name="Default Changelist" comment="Modified README, changed Demo render">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/render/img000000.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/render/img000000.jpeg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -117,7 +114,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../android-projects/Kotlin-Hello" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../MuseKeys" />
     <property name="org.rust.cargo.project.model.PROJECT_DISCOVERY" value="true" />
     <property name="org.rust.hideToolchainNotifications" value="true" />
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
@@ -368,7 +365,14 @@
       <option name="project" value="LOCAL" />
       <updated>1636892380902</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="Modified README, changed Demo render">
+      <created>1636893299673</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1636893299673</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TodoView">
@@ -440,7 +444,8 @@
     <MESSAGE value="Prepare for github upload" />
     <MESSAGE value="Basic refactors, reduce warnings" />
     <MESSAGE value="README added" />
-    <option name="LAST_COMMIT_MESSAGE" value="README added" />
+    <MESSAGE value="Modified README, changed Demo render" />
+    <option name="LAST_COMMIT_MESSAGE" value="Modified README, changed Demo render" />
   </component>
   <component name="masterDetails">
     <states>
